@@ -145,8 +145,11 @@ app.get('/api/user/account', (req, res) => {
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
+      console.error("Token verification error:", err); // Log token verification errors
       return res.status(401).json({ message: 'Invalid token' });
     }
+
+    console.log("Decoded token:", decoded); // Log the decoded token
 
     const query = 'SELECT id, username FROM users WHERE id = ?';
     pool.query(query, [decoded.id], (err, result) => {
@@ -154,6 +157,8 @@ app.get('/api/user/account', (req, res) => {
         console.error('Database query error:', err);
         return res.status(500).json({ message: 'Database error' });
       }
+
+      console.log("Query result:", result); // Log the query result
 
       if (result.length === 0) {
         return res.status(404).json({ message: 'User not found' });
@@ -163,6 +168,7 @@ app.get('/api/user/account', (req, res) => {
     });
   });
 });
+
 
 
 // Basic API endpoint to check server status
